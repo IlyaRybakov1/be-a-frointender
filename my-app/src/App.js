@@ -1,25 +1,21 @@
-import logo from './logo.svg';
 import './App.css';
+import UsersInfo from './components/UsersInfo';
+import UserAlbum from './components/UserAlbum';
+import {useState} from 'react';
 
 function App() {
+  const [data, setData] = useState()
+  const handleUserClick = (id) => {
+    fetch(`https://jsonplaceholder.typicode.com/albums?userId=${id}`)
+      .then(response => response.json())
+      .then(json => { setData(json) })
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <p>That line was added by your teacher.</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="container">
+        <UsersInfo onClick={handleUserClick}/>
+        <UserAlbum data={data}/>
+        </div>
   );
 }
 
