@@ -1,47 +1,49 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { onBeforeUpdate, onMounted, onUpdated, reactive, ref } from 'vue';
+import Spaceship from './components/Spaceship.vue'
+import API from './components/API'
+const renderComponent = ref(false);
+let alldata = reactive({})
+
+let url = 'https://swapi.dev/api/starships'
+onMounted(async () => {
+  (alldata = await API._getData(url)).then(renderComponent.value = true)
+})
+function loadPage(newUrl) {
+  url = newUrl
+  renderComponent.value = false
+}
+onBeforeUpdate(async () => {
+  (alldata = await API._getData(url)).then(renderComponent.value = true)
+})
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+      <Spaceship v-if="renderComponent" v-for="item in alldata.results" v-bind:data="item" />
+      <div class="buttons">
+        <button class="button-first" v-if="renderComponent && alldata.previous != null" @click="loadPage(alldata.previous)">Prev</button>
+        <button class="button-second" v-if="renderComponent && alldata.next != null" @click="loadPage(alldata.next)">Next</button>
+      </div>
+      
     </div>
   </header>
-
-  <main>
-    <TheWelcome />
-  </main>
 </template>
 
 <style scoped>
-header {
-  line-height: 1.5;
+.buttons {
+  width: 90%;
+
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.button-first {
+  width: 300px;
+  height: 100px;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.button-second {
+  float: right;
+  width: 300px;
+  height: 100px;
 }
 </style>
