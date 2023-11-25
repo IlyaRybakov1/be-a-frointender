@@ -38,7 +38,6 @@ app.post("/students/:id", urlencodedParser, function (req, res) {
     data.forEach((element) => {
       if (req.params.id == element.id) {
         res.sendStatus(400);
-        res.send("Input data error!");
         isError = true;
       }
     });
@@ -51,7 +50,6 @@ app.post("/students/:id", urlencodedParser, function (req, res) {
         rate: Number(req.body.rate)
       }
       data.push(obj);
-      console.log(data);
       res.send("Data added!");
     }
   }
